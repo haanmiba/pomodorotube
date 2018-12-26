@@ -43,16 +43,6 @@ function initClient() {
     });
 }
 
-function setSigninStatus() {
-  var user = GoogleAuth.currentUser.get();
-  isAuthorized = user.hasGrantedScopes(
-    "https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner"
-  );
-  if (isAuthorized) {
-    getCurrentChannel();
-  }
-}
-
 // Update UI Sign in state changes
 function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
@@ -60,7 +50,7 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "block";
     content.style.display = "block";
     videoContainer.style.display = "block";
-    setSigninStatus();
+    getCurrentChannel();
   } else {
     authorizeButton.style.display = "block";
     signoutButton.style.display = "none";
@@ -153,6 +143,7 @@ function showChannelData(data) {
 
 // Get channel from API
 function getCurrentChannel() {
+  console.log("test");
   gapi.client.youtube.channels
     .list({
       part: "snippet,contentDetails,statistics",
