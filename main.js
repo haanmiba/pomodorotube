@@ -12,7 +12,7 @@ const channelForm = document.getElementById("channel-form");
 const channelInput = document.getElementById("channel-input");
 const videoContainer = document.getElementById("video-container");
 
-const defaultChannel = 'techguyweb';
+const defaultChannel = "techguyweb";
 
 // Load auth2 library
 function handleClientLoad() {
@@ -27,13 +27,13 @@ function initClient() {
       clientId: CLIENT_ID,
       scope: SCOPES
     })
-    .then(function () {
+    .then(function() {
       // Listen for sign in state changes
       gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
       // Handle initial sign in state
       updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
       authorizeButton.onclick = handleAuthClick;
-      signoutButton = handleSignoutClick;
+      signoutButton.onclick = handleSignoutClick;
     });
 }
 
@@ -65,5 +65,5 @@ function handleSignoutClick(event) {
 
 // Get channel from API
 function getChannel(channel) {
-    console.log(channel);
+  console.log(channel);
 }
