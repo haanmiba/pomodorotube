@@ -144,7 +144,8 @@ function showChannelData(data) {
 function getSubscriptions() {
   buildApiRequest("GET", "/youtube/v3/subscriptions", {
     mine: "true",
-    part: "snippet,contentDetails"
+    part: "snippet,contentDetails",
+    maxResults: "50"
   });
 }
 
