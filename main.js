@@ -14,6 +14,8 @@ const videoContainer = document.getElementById("video-container");
 
 const defaultChannel = "techguyweb";
 
+var GoogleAuth;
+
 // Load auth2 library
 function handleClientLoad() {
   gapi.load("client:auth2", initClient);
@@ -37,6 +39,15 @@ function initClient() {
     });
 }
 
+function setSigninStatus() {
+  var user = GoogleAuth.currentUser.get();
+  isAuthorized = user.hasGrantedScopes(
+    "https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner"
+  );
+  if (isAuthorized) {
+  }
+}
+
 // Update UI Sign in state changes
 function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
@@ -44,7 +55,7 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "block";
     content.style.display = "block";
     videoContainer.style.display = "block";
-    getChannel(defaultChannel);
+    setSigninStatus();
   } else {
     authorizeButton.style.display = "block";
     signoutButton.style.display = "none";
@@ -63,6 +74,73 @@ function handleSignoutClick(event) {
   gapi.auth2.getAuthInstance().signOut();
 }
 
+function createResource(properties) {
+  var resource = {};
+  var normalizedProps = properties;
+  for (var p in properties) {
+    var value = properties[p];
+    if (p && p.substr(-2, 2) == "[]") {
+      var adjustedName = p.replace("[]", "");
+      if (value) {
+        normalizedProps[adjustedName] = value.split(",");
+      }
+      delete normalizedProps[p];
+    }
+  }
+  for (var p in normalizedProps) {
+    // Leave properties that don't have values out of inserted resource.
+    if (normalizedProps.hasOwnProperty(p) && normalizedProps[p]) {
+      var propArray = p.split(".");
+      var ref = resource;
+      for (var pa = 0; pa < propArray.length; pa++) {
+        var key = propArray[pa];
+        if (pa == propArray.length - 1) {
+          ref[key] = normalizedProps[p];
+        } else {
+          ref = ref[key] = ref[key] || {};
+        }
+      }
+    }
+  }
+  return resource;
+}
+
+function removeEmptyParams(params) {
+  for (var p in params) {
+    if (!params[p] || params[p] == "undefined") {
+      delete params[p];
+    }
+  }
+  return params;
+}
+
+function executeRequest(request) {
+  request.execute(function(response) {
+    console.log(response);
+  });
+}
+
+function buildApiRequest(requestMethod, path, params, properties) {
+  params = removeEmptyParams(params);
+  var request;
+  if (properties) {
+    var resource = createResource(properties);
+    request = gapi.client.request({
+      body: resource,
+      method: requestMethod,
+      path: path,
+      params: params
+    });
+  } else {
+    request = gapi.client.request({
+      method: requestMethod,
+      path: path,
+      params: params
+    });
+  }
+  executeRequest(request);
+}
+
 function showChannelData(data) {
   const channelData = document.getElementById("channel-data");
   channelData.innerHTML = data;
@@ -73,7 +151,7 @@ function getChannel(channel) {
   gapi.client.youtube.channels
     .list({
       part: "snippet,contentDetails,statistics",
-      forUsername: channel
+      mine: true
     })
     .then(response => {
       const channel = response.result.items[0];
