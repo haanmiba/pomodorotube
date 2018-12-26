@@ -142,16 +142,10 @@ function showChannelData(data) {
 }
 
 function getSubscriptions() {
-  console.log("Getting subscriptions");
-  gapi.client.youtube.subscriptions
-    .list({
-      part: "snippet,contentDetails",
-      mine: true
-    })
-    .then(response => {
-      console.log(response);
-    })
-    .catch(err => alert("SOMETHING WRONG HAPPENED"))
+  buildApiRequest("GET", "/youtube/v3/subscriptions", {
+    mine: "true",
+    part: "snippet,contentDetails"
+  });
 }
 
 // Get channel from API
