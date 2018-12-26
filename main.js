@@ -1,3 +1,5 @@
+var GoogleAuth;
+
 const CLIENT_ID =
   "263383866383-1mgpakgpgqilo2v3aoc7kj3eane6enla.apps.googleusercontent.com";
 const DISCOVERY_DOCS = [
@@ -14,8 +16,6 @@ const videoContainer = document.getElementById("video-container");
 
 const defaultChannel = "techguyweb";
 
-var GoogleAuth;
-
 // Load auth2 library
 function handleClientLoad() {
   gapi.load("client:auth2", initClient);
@@ -30,6 +30,10 @@ function initClient() {
       scope: SCOPES
     })
     .then(function() {
+      GoogleAuth = gapi.auth2.getAuthInstance();
+
+      GoogleAuth.isSignedIn.listen(updateSigninStatus);
+
       // Listen for sign in state changes
       gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
       // Handle initial sign in state
@@ -45,6 +49,7 @@ function setSigninStatus() {
     "https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner"
   );
   if (isAuthorized) {
+    getCurrentChannel();
   }
 }
 
@@ -55,7 +60,7 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "block";
     content.style.display = "block";
     videoContainer.style.display = "block";
-    getChannel(defaultChannel);
+    setSigninStatus();
   } else {
     authorizeButton.style.display = "block";
     signoutButton.style.display = "none";
@@ -147,7 +152,7 @@ function showChannelData(data) {
 }
 
 // Get channel from API
-function getChannel(channel) {
+function getCurrentChannel() {
   gapi.client.youtube.channels
     .list({
       part: "snippet,contentDetails,statistics",
