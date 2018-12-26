@@ -50,7 +50,7 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "block";
     content.style.display = "block";
     videoContainer.style.display = "block";
-    getCurrentChannel();
+    getSubscriptions();
   } else {
     authorizeButton.style.display = "block";
     signoutButton.style.display = "none";
@@ -139,6 +139,19 @@ function buildApiRequest(requestMethod, path, params, properties) {
 function showChannelData(data) {
   const channelData = document.getElementById("channel-data");
   channelData.innerHTML = data;
+}
+
+function getSubscriptions() {
+  console.log("Getting subscriptions");
+  gapi.client.youtube.subscriptions
+    .list({
+      part: "snippet,contentDetails",
+      mine: true
+    })
+    .then(response => {
+      console.log(response);
+    })
+    .catch(err => alert("SOMETHING WRONG HAPPENED"))
 }
 
 // Get channel from API
