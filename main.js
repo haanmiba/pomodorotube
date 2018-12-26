@@ -32,12 +32,12 @@ function initClient() {
     .then(function() {
       GoogleAuth = gapi.auth2.getAuthInstance();
 
+      // Listen for sign in state changes
       GoogleAuth.isSignedIn.listen(updateSigninStatus);
 
-      // Listen for sign in state changes
-      gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
       // Handle initial sign in state
-      updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      updateSigninStatus(GoogleAuth.isSignedIn.get());
+
       authorizeButton.onclick = handleAuthClick;
       signoutButton.onclick = handleSignoutClick;
     });
@@ -61,12 +61,12 @@ function updateSigninStatus(isSignedIn) {
 
 // Sign in the user upon button click
 function handleAuthClick(event) {
-  gapi.auth2.getAuthInstance().signIn();
+  GoogleAuth.signIn();
 }
 
 // Sign out the user upon button click
 function handleSignoutClick(event) {
-  gapi.auth2.getAuthInstance().signOut();
+  GoogleAuth.signOut();
 }
 
 function createResource(properties) {
