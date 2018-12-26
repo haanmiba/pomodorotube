@@ -24,10 +24,10 @@ function initClient() {
   gapi.client
     .init({
       discoveryDocs: DISCOVERY_DOCS,
-      clientID: CLIENT_ID,
+      clientId: CLIENT_ID,
       scope: SCOPES
     })
-    .then(() => {
+    .then(function () {
       // Listen for sign in state changes
       gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
       // Handle initial sign in state
