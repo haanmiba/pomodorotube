@@ -79,7 +79,15 @@ function updateSigninStatus(isSignedIn) {
         const filteredVideos = realVideos.filter(v =>
           filterVideoByMinuteLength(v, 5)
         );
-        console.log(filteredVideos);
+        return filteredVideos;
+      })
+      .then(filteredVideos => {
+        videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
+        src="https://www.youtube.com/embed/${
+          filteredVideos[0].id
+        }?rel=0;&autoplay=1"
+        frameborder="0"></iframe>
+      `;
       })
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
@@ -172,6 +180,6 @@ function compareVideosByPublishDate(a, b) {
 }
 
 function filterVideoByMinuteLength(video, minuteLength) {
-  const minuteRegex = new RegExp(`[HT]${minuteLength}M`);
+  const minuteRegex = new RegExp(`T${minuteLength}M`);
   return minuteRegex.test(video.contentDetails.duration);
 }
