@@ -51,7 +51,19 @@ function updateSigninStatus(isSignedIn) {
     content.style.display = "block";
     videoContainer.style.display = "block";
     getSubscriptions()
-      .then(result => console.log(result))
+      .then(result => {
+        const ids = result.map(channel => channel.snippet.resourceId.channelId);
+        return ids.join(",");
+      })
+      .then(joinedIds => {
+        console.log(joinedIds);
+        return gapi.client.youtube.channels.list({
+          part: "contentDetails",
+          id: joinedIds,
+          maxResults: 50
+        });
+      })
+      .then(response => console.log(response))
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
       );
