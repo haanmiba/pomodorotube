@@ -155,6 +155,7 @@ function getSubscriptions() {
       })
       .then(response => {
         console.log(response);
+        console.log(repsonse.result.nextPageToken);
         nextPageToken = response.result.nextPageToken;
       })
       .catch(err => alert("There was an issue fetching your subscriptions."));
