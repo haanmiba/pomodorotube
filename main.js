@@ -66,16 +66,7 @@ function updateSigninStatus(isSignedIn) {
           channel => channel.contentDetails.relatedPlaylists.uploads
         )
       )
-      .then(playlistIds =>
-        playlistIds.map(id =>
-          gapi.client.youtube.playlistItems.list({
-            part: "contentDetails",
-            playlistId: id,
-            maxResults: 5
-          })
-        )
-      )
-      .then(result => console.log(result))
+      .then(playlistIds => console.log(playlistIds))
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
       );
