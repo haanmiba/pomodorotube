@@ -29,7 +29,7 @@ function initClient() {
       clientId: CLIENT_ID,
       scope: SCOPES
     })
-    .then(function() {
+    .then(() => {
       GoogleAuth = gapi.auth2.getAuthInstance();
 
       // Listen for sign in state changes
@@ -75,133 +75,14 @@ function handleSignoutClick(event) {
   GoogleAuth.signOut();
 }
 
-function createResource(properties) {
-  var resource = {};
-  var normalizedProps = properties;
-  for (var p in properties) {
-    var value = properties[p];
-    if (p && p.substr(-2, 2) == "[]") {
-      var adjustedName = p.replace("[]", "");
-      if (value) {
-        normalizedProps[adjustedName] = value.split(",");
-      }
-      delete normalizedProps[p];
-    }
-  }
-  for (var p in normalizedProps) {
-    // Leave properties that don't have values out of inserted resource.
-    if (normalizedProps.hasOwnProperty(p) && normalizedProps[p]) {
-      var propArray = p.split(".");
-      var ref = resource;
-      for (var pa = 0; pa < propArray.length; pa++) {
-        var key = propArray[pa];
-        if (pa == propArray.length - 1) {
-          ref[key] = normalizedProps[p];
-        } else {
-          ref = ref[key] = ref[key] || {};
-        }
-      }
-    }
-  }
-  return resource;
-}
-
-function removeEmptyParams(params) {
-  for (var p in params) {
-    if (!params[p] || params[p] == "undefined") {
-      delete params[p];
-    }
-  }
-  return params;
-}
-
-function executeRequest(request) {
-  request.execute(function(response) {
-    console.log(response);
-    return response;
-  });
-}
-
-function buildApiRequest(requestMethod, path, params, properties) {
-  params = removeEmptyParams(params);
-  var request;
-  if (properties) {
-    var resource = createResource(properties);
-    request = gapi.client.request({
-      body: resource,
-      method: requestMethod,
-      path: path,
-      params: params
-    });
-  } else {
-    request = gapi.client.request({
-      method: requestMethod,
-      path: path,
-      params: params
-    });
-  }
-  return executeRequest(request);
-}
-
-function showChannelData(data) {
-  const channelData = document.getElementById("channel-data");
-  channelData.innerHTML = data;
-}
-
-function getSubscriptions(nextPageToken = "", subscriptionList = []) {
+function getSubscriptions() {
   return gapi.client.youtube.subscriptions
     .list({
       part: "snippet,contentDetails",
       mine: true,
-      maxResults: 50,
-      pageToken: nextPageToken
+      maxResults: 50
     })
     .then(response => {
-      response.result.items.forEach(subscription =>
-        subscriptionList.push(subscription)
-      );
-      if (response.result.nextPageToken) {
-        return getSubscriptions(
-          response.result.nextPageToken,
-          subscriptionList
-        );
-      } else {
-        return subscriptionList;
-      }
+      return response.result.items;
     });
-}
-
-// Get channel from API
-function getCurrentChannel() {
-  console.log("test");
-  gapi.client.youtube.channels
-    .list({
-      part: "snippet,contentDetails,statistics",
-      mine: true
-    })
-    .then(response => {
-      const channel = response.result.items[0];
-      const output = `
-        <ul class="collection">
-          <li class="collection-item">Title: ${channel.snippet.title}</li>
-          <li class="collection-item">ID: ${channel.id}</li>
-          <li class="collection-item">Subscribers: ${
-            channel.statistics.subscriberCount
-          }</li>
-          <li class="collection-item">Views: ${
-            channel.statistics.viewCount
-          }</li>
-          <li class="collection-item">Videos: ${
-            channel.statistics.videoCount
-          }</li>
-        </ul>
-        <p>${channel.snippet.description}</p>
-        <hr>
-        <a class="btn grey darken-2" target="_blank" href="https://youtube.com/${
-          channel.snippet.customUrl
-        }">Visit Channel</a>
-        `;
-      showChannelData(output);
-    })
-    .catch(err => alert("No channel by that name."));
 }
