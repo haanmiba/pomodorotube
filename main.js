@@ -69,6 +69,7 @@ function updateSigninStatus(isSignedIn) {
       .then(playlistIds => {
         getVideos(playlistIds);
       })
+      .then(videoIds => console.log(videoIds))
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
       );
@@ -110,6 +111,11 @@ function getVideos(playlistIds, index = 0, videos = []) {
       maxResults: 5
     })
     .then(response => {
-      console.log(response);
+      response.result.items.forEach(videoId => videos.push(videoId));
+      if (index + 1 != playlistIds.length) {
+        return getVideos(playlistIds, index + 1, videos);
+      } else {
+        return videos;
+      }
     });
 }
