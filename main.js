@@ -157,11 +157,13 @@ function getSubscriptions() {
         console.log(response);
         console.log(response.result);
         nextPageToken = response.result.nextPageToken;
+        console.log(nextPageToken);
       })
       .catch(err =>
-        alert("There was an issue fetching your subscriptions. " + err)
+        alert("There was an issue fetching your subscriptions: " + err)
       );
   } while (nextPageToken);
+  console.log("OUTISDE " + nextPageToken);
   /*
   while (true) {
     gapi.client.youtube.subscriptions.list({
