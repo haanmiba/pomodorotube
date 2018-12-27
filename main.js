@@ -67,7 +67,10 @@ function updateSigninStatus(isSignedIn) {
         )
       )
       .then(playlistIds => getVideos(playlistIds))
-      .then(videoIds => console.log(videoIds))
+      .then(videoIds => {
+        videoIds.sort(compareVideosByPublishDate);
+        console.log(videoIds);
+      })
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
       );
@@ -116,4 +119,14 @@ function getVideos(playlistIds, index = 0, videos = []) {
         return videos;
       }
     });
+}
+
+function compareVideosByPublishDate(a, b) {
+  if (a.contentDetails.videoPublishedAt < b.contentDetails.videoPublishedAt) {
+    return -1;
+  }
+  if (a.contentDetails.videoPublishedAt > b.contentDetails.videoPublishedAt) {
+    return 1;
+  }
+  return 0;
 }
