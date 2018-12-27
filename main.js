@@ -53,7 +53,9 @@ function updateSigninStatus(isSignedIn) {
     var subscriptionChannels = [];
     getSubscriptions("", subscriptionChannels)
       .then(result => {
-        console.log(result);
+        console.log(
+          result.forEach(channel => console.log(channel.snippet.title))
+        );
       })
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
