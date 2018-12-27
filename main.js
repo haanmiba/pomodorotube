@@ -112,6 +112,7 @@ function removeEmptyParams(params) {
 function executeRequest(request) {
   request.execute(function(response) {
     console.log(response);
+    return response;
   });
 }
 
@@ -133,7 +134,7 @@ function buildApiRequest(requestMethod, path, params, properties) {
       params: params
     });
   }
-  executeRequest(request);
+  return executeRequest(request);
 }
 
 function showChannelData(data) {
@@ -142,11 +143,13 @@ function showChannelData(data) {
 }
 
 function getSubscriptions() {
-  buildApiRequest("GET", "/youtube/v3/subscriptions", {
+  var response = buildApiRequest("GET", "/youtube/v3/subscriptions", {
     mine: "true",
     part: "snippet,contentDetails",
     maxResults: "50"
   });
+  console.log("GOT RESPONSE!");
+  console.log(response);
 }
 
 // Get channel from API
