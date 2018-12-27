@@ -69,11 +69,9 @@ function updateSigninStatus(isSignedIn) {
         )
       )
       .then(playlistIds => getVideos(playlistIds))
-      .then(videos => {
-        console.log(videos);
-        const videoIds = videos.map(v => v.contentDetails.videoId);
-        getActualVideoObjects(videoIds);
-      })
+      .then(videos => videos.map(v => v.contentDetails.videoId))
+      .then(videoIds => getActualVideoObjects(videoIds))
+      .then(realVideos => console.log(realVideos))
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
       );
@@ -130,18 +128,27 @@ function getActualVideoObjects(
   endIndex = NUM_OF_MAX_RESULTS,
   realVideos = []
 ) {
-  console.log(videoIds);
   const start = startIndex;
   const end = Math.min(videoIds.length, endIndex);
   const joinedIds = videoIds.slice(start, end).join(",");
   return gapi.client.youtube.videos
     .list({
-      part: "snippet",
+      part: "snippet,contentDetails",
       id: joinedIds,
       maxResults: NUM_OF_MAX_RESULTS
     })
     .then(response => {
-      console.log(response);
+      response.result.items.forEach(video => realVideos.push(video));
+      if (end != videoIds.length) {
+        return getActualVideoObjects(
+          videoIds,
+          end,
+          end + NUM_OF_MAX_RESULTS,
+          realVideos
+        );
+      } else {
+        return realVideos;
+      }
     });
 }
 
