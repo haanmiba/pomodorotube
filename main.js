@@ -155,10 +155,12 @@ function getSubscriptions() {
       })
       .then(response => {
         console.log(response);
-        console.log(repsonse.result);
+        console.log(response.result);
         nextPageToken = response.result.nextPageToken;
       })
-      .catch(err => alert("There was an issue fetching your subscriptions. " + err));
+      .catch(err =>
+        alert("There was an issue fetching your subscriptions. " + err)
+      );
   } while (nextPageToken);
   /*
   while (true) {
