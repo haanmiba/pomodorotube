@@ -85,7 +85,7 @@ function updateSigninStatus(isSignedIn) {
         videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
         src="https://www.youtube.com/embed/${
           filteredVideos[0].id
-        }?rel=0;&autoplay=1"
+        }?autoplay=1"
         frameborder="0"></iframe>
       `;
       })
