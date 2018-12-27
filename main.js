@@ -143,13 +143,40 @@ function showChannelData(data) {
 }
 
 function getSubscriptions() {
-  var response = buildApiRequest("GET", "/youtube/v3/subscriptions", {
+  const subscriptionChannels = [];
+  var nextPageToken = "";
+  do {
+    gapi.client.youtube.subscriptions
+      .list({
+        part: "snippet,contentDetails",
+        mine: true,
+        maxResults: 50,
+        pageToken: nextPageToken
+      })
+      .then(response => {
+        console.log(response);
+        nextPageToken = response.nextPageToken;
+      })
+      .catch(err => alert("There was an issue fetching your subscriptions."));
+  } while (nextPageToken);
+  /*
+  while (true) {
+    gapi.client.youtube.subscriptions.list({
+      part: "snippet,contentDetails",
+      mine: true,
+      maxResults: 50
+    }).then(response => {
+
+    }).catch(err => alert("There was an issue fetching your subscriptions."));
+  }
+  */
+  /*
+  buildApiRequest("GET", "/youtube/v3/subscriptions", {
     mine: "true",
     part: "snippet,contentDetails",
     maxResults: "50"
   });
-  console.log("GOT RESPONSE!");
-  console.log(response);
+  */
 }
 
 // Get channel from API
