@@ -71,7 +71,13 @@ function updateSigninStatus(isSignedIn) {
       .then(playlistIds => getVideos(playlistIds))
       .then(videos => videos.map(v => v.contentDetails.videoId))
       .then(videoIds => getActualVideoObjects(videoIds))
-      .then(realVideos => console.log(realVideos))
+      .then(realVideos => {
+        realVideos.sort(compareVideosByPublishDate);
+        return realVideos;
+      })
+      .then(realVideos => {
+        realVideos.forEach(v => console.log(v));
+      })
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
       );
@@ -153,10 +159,10 @@ function getActualVideoObjects(
 }
 
 function compareVideosByPublishDate(a, b) {
-  if (b.contentDetails.videoPublishedAt < a.contentDetails.videoPublishedAt) {
+  if (b.snippet.publishedAt < a.snippet.publishedAt) {
     return -1;
   }
-  if (b.contentDetails.videoPublishedAt > a.contentDetails.videoPublishedAt) {
+  if (b.snippet.publishedAt > a.snippet.publishedAt) {
     return 1;
   }
   return 0;
