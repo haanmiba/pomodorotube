@@ -14,6 +14,8 @@ const channelForm = document.getElementById("channel-form");
 const channelInput = document.getElementById("channel-input");
 const videoContainer = document.getElementById("video-container");
 
+const NUM_OF_MAX_RESULTS = 50;
+
 const defaultChannel = "techguyweb";
 
 // Load auth2 library
@@ -58,7 +60,7 @@ function updateSigninStatus(isSignedIn) {
         gapi.client.youtube.channels.list({
           part: "contentDetails",
           id: joinedIds,
-          maxResults: 50
+          maxResults: NUM_OF_MAX_RESULTS
         })
       )
       .then(response =>
@@ -68,8 +70,7 @@ function updateSigninStatus(isSignedIn) {
       )
       .then(playlistIds => getVideos(playlistIds))
       .then(videoIds => {
-        videoIds.sort(compareVideosByPublishDate);
-        console.log(videoIds);
+        getActualVideoObjects(videoIds);
       })
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
@@ -97,7 +98,7 @@ function getSubscriptions() {
     .list({
       part: "snippet,contentDetails",
       mine: true,
-      maxResults: 50
+      maxResults: NUM_OF_MAX_RESULTS
     })
     .then(response => {
       return response.result.items;
@@ -121,11 +122,31 @@ function getVideos(playlistIds, index = 0, videos = []) {
     });
 }
 
+function getActualVideoObjects(
+  videoIds,
+  startIndex = 0,
+  endIndex = NUM_OF_MAX_RESULTS,
+  realVideos = []
+) {
+  const start = startIndex;
+  const end = Math.min(videoIds.length, endIndex);
+  const joinedIds = videoIds.slice(start, end).join(",");
+  return gapi.client.youtube.videos
+    .list({
+      part: "snippet",
+      id: joinedIds,
+      maxResults: NUM_OF_MAX_RESULTS
+    })
+    .then(response => {
+      console.log(response);
+    });
+}
+
 function compareVideosByPublishDate(a, b) {
-  if (a.contentDetails.videoPublishedAt < b.contentDetails.videoPublishedAt) {
+  if (b.contentDetails.videoPublishedAt < a.contentDetails.videoPublishedAt) {
     return -1;
   }
-  if (a.contentDetails.videoPublishedAt > b.contentDetails.videoPublishedAt) {
+  if (b.contentDetails.videoPublishedAt > a.contentDetails.videoPublishedAt) {
     return 1;
   }
   return 0;
