@@ -51,9 +51,7 @@ function updateSigninStatus(isSignedIn) {
     content.style.display = "block";
     videoContainer.style.display = "block";
     getSubscriptions()
-      .then(result =>
-        result.forEach(channel => console.log(channel.snippet.title))
-      )
+      .then(result => console.log(result))
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
       );
