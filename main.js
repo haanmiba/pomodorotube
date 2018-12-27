@@ -69,8 +69,9 @@ function updateSigninStatus(isSignedIn) {
         )
       )
       .then(playlistIds => getVideos(playlistIds))
-      .then(videoIds => {
-        console.log(videoIds);
+      .then(videos => {
+        console.log(videos);
+        const videoIds = videos.map(v => v.id);
         getActualVideoObjects(videoIds);
       })
       .catch(err =>
