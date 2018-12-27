@@ -70,6 +70,7 @@ function updateSigninStatus(isSignedIn) {
       )
       .then(playlistIds => getVideos(playlistIds))
       .then(videoIds => {
+        console.log(videoIds);
         getActualVideoObjects(videoIds);
       })
       .catch(err =>
