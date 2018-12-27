@@ -76,7 +76,10 @@ function updateSigninStatus(isSignedIn) {
         return realVideos;
       })
       .then(realVideos => {
-        realVideos.forEach(v => console.log(v));
+        const filteredVideos = realVideos.filter(v =>
+          filterVideoByMinuteLength(v, 5)
+        );
+        console.log(filteredVideos);
       })
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
@@ -166,4 +169,9 @@ function compareVideosByPublishDate(a, b) {
     return 1;
   }
   return 0;
+}
+
+function filterVideoByMinuteLength(video, minuteLength) {
+  const minuteRegex = new RegExp(`[HT]${minuteLength}M`);
+  return minuteRegex.test(video.contentDetails.duration);
 }
