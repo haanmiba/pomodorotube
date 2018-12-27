@@ -50,8 +50,7 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "block";
     content.style.display = "block";
     videoContainer.style.display = "block";
-    var subscriptionChannels = [];
-    getSubscriptions("", subscriptionChannels)
+    getSubscriptions()
       .then(result =>
         result.forEach(channel => console.log(channel.snippet.title))
       )
@@ -149,7 +148,7 @@ function showChannelData(data) {
   channelData.innerHTML = data;
 }
 
-function getSubscriptions(nextPageToken, subscriptionList) {
+function getSubscriptions(nextPageToken = "", subscriptionList = []) {
   return gapi.client.youtube.subscriptions
     .list({
       part: "snippet,contentDetails",
@@ -171,32 +170,6 @@ function getSubscriptions(nextPageToken, subscriptionList) {
       }
     });
 }
-
-/*
-function getSubscriptions() {
-  const subscriptionChannels = [];
-  var nextPageToken = "";
-  do {
-    gapi.client.youtube.subscriptions
-      .list({
-        part: "snippet,contentDetails",
-        mine: true,
-        maxResults: 50,
-        pageToken: nextPageToken
-      })
-      .then(response => {
-        console.log(response);
-        console.log(response.result);
-        nextPageToken = response.result.nextPageToken;
-        console.log(nextPageToken);
-      })
-      .catch(err =>
-        alert("There was an issue fetching your subscriptions: " + err)
-      );
-  } while (nextPageToken);
-  console.log("OUTISDE " + nextPageToken);
-}
-*/
 
 // Get channel from API
 function getCurrentChannel() {
