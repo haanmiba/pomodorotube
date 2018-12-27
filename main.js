@@ -66,7 +66,9 @@ function updateSigninStatus(isSignedIn) {
           channel => channel.contentDetails.relatedPlaylists.uploads
         )
       )
-      .then(playlistIds => console.log(playlistIds))
+      .then(playlistIds => {
+        getVideos(playlistIds);
+      })
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
       );
@@ -97,5 +99,17 @@ function getSubscriptions() {
     })
     .then(response => {
       return response.result.items;
+    });
+}
+
+function getVideos(playlistIds, index = 0, videos = []) {
+  return gapi.client.youtube.playlistItems
+    .list({
+      part: "contentDetails",
+      playlistId: playlistIds[index],
+      maxResults: 5
+    })
+    .then(response => {
+      console.log(response);
     });
 }
