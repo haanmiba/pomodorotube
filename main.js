@@ -66,9 +66,7 @@ function updateSigninStatus(isSignedIn) {
           channel => channel.contentDetails.relatedPlaylists.uploads
         )
       )
-      .then(playlistIds => {
-        getVideos(playlistIds);
-      })
+      .then(playlistIds => getVideos(playlistIds))
       .then(videoIds => console.log(videoIds))
       .catch(err =>
         alert(`There was an issue getting the subscriptions: ${err}`)
