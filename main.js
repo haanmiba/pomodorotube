@@ -71,7 +71,7 @@ function updateSigninStatus(isSignedIn) {
       .then(playlistIds => getVideos(playlistIds))
       .then(videos => {
         console.log(videos);
-        const videoIds = videos.map(v => v.id);
+        const videoIds = videos.map(v => v.contentDetails.videoId);
         getActualVideoObjects(videoIds);
       })
       .catch(err =>
@@ -130,6 +130,7 @@ function getActualVideoObjects(
   endIndex = NUM_OF_MAX_RESULTS,
   realVideos = []
 ) {
+  console.log(videoIds);
   const start = startIndex;
   const end = Math.min(videoIds.length, endIndex);
   const joinedIds = videoIds.slice(start, end).join(",");
