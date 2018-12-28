@@ -83,9 +83,7 @@ function updateSigninStatus(isSignedIn) {
       })
       .then(filteredVideos => {
         videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
-        src="https://www.youtube.com/embed/${
-          filteredVideos[0].id
-        }?autoplay=1"
+        src="https://www.youtube.com/embed/${filteredVideos[0].id}?autoplay=1"
         frameborder="0"></iframe>
       `;
       })
@@ -183,3 +181,7 @@ function filterVideoByMinuteLength(video, minuteLength) {
   const minuteRegex = new RegExp(`T${minuteLength}M`);
   return minuteRegex.test(video.contentDetails.duration);
 }
+
+setTimeout(() => {
+  videoContainer.innerHTML = "";
+}, 60000);
