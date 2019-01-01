@@ -21,7 +21,7 @@ var currentPhase;
 var secondsRemaining;
 var timerInterval;
 var focusVideoIds;
-var breakVideoIds;
+var breakVideos;
 
 // Load auth2 library
 function handleClientLoad() {
@@ -69,7 +69,7 @@ function handleNewFocusVideo(event = undefined) {
 }
 
 function handleNewBreakVideo(event = undefined) {
-  const videoId = breakVideoIds[0];
+  const videoId = breakVideos[0].id;
   displayVideo(videoId);
   return true;
 }
@@ -183,8 +183,7 @@ function getBreakVideos() {
       const filteredVideos = realVideos.filter(v =>
         filterVideoByMinuteLength(v, 5)
       );
-      breakVideoIds = filteredVideos;
-      console.log(breakVideoIds);
+      breakVideos = filteredVideos;
     })
     .catch(err =>
       alert(`There was an issue getting the subscriptions: ${err}`)
