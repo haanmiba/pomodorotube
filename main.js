@@ -70,7 +70,15 @@ function updateSigninStatus(isSignedIn) {
 }
 
 function displayStudyVideo() {
-  searchStudyVideo().then(response => console.log(response));
+  searchStudyVideo()
+    .then(response => response.result.items)
+    .then(videos => videos.map(v => v.id.videoId))
+    .then(videoIds => videoIds[Math.floor(Math.random() * videoIds.length)])
+    .then(videoId => {
+      videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
+    src="https://www.youtube.com/embed/${videoId}?autoplay=1"
+    frameborder="0"></iframe>`;
+    });
 }
 
 function searchStudyVideo() {
@@ -78,7 +86,8 @@ function searchStudyVideo() {
     .list({
       maxResults: 25,
       part: "snippet",
-      q: "study music"
+      q: "study music",
+      type: "video"
     })
     .then(response => {
       return response;
