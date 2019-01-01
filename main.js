@@ -69,6 +69,13 @@ function updateTimer() {
   const minutes = Math.floor(secondsRemaining / 60);
   const seconds = secondsRemaining - minutes * 60;
 
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  if (seconds < 10) {
+    seconds = "0" + seconds;
+  }
+
   timerContainer.innerHTML = `<h1>${minutes}:${seconds}</h1>`;
 
   secondsRemaining--;
