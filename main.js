@@ -74,13 +74,15 @@ function displayStudyVideo() {
 }
 
 function searchStudyVideo() {
-  gapi.client.youtube.search.list({
-    maxResults: 25,
-    part: "snippet",
-    q: "study music"
-  }).then(response => {
-    return response
-  })
+  return gapi.client.youtube.search
+    .list({
+      maxResults: 25,
+      part: "snippet",
+      q: "study music"
+    })
+    .then(response => {
+      return response;
+    });
 }
 
 function displayBreakVideo() {
