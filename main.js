@@ -68,6 +68,12 @@ function handleNewFocusVideo(event = undefined) {
   return true;
 }
 
+function handleNewBreakVideo(event = undefined) {
+  const videoId = breakVideoIds[0];
+  displayVideo(videoId);
+  return true;
+}
+
 function updateTimer() {
   let minutes = Math.floor(secondsRemaining / 60);
   let seconds = secondsRemaining - minutes * 60;
@@ -90,6 +96,7 @@ function updateTimer() {
 function clearTimer() {
   timerContainer.innerHTML = "";
   clearInterval(timerInterval);
+  handleNewBreakVideo();
 }
 
 // Update UI Sign in state changes
