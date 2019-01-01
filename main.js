@@ -96,7 +96,7 @@ function displayStudyVideo() {
 function searchStudyVideo() {
   return gapi.client.youtube.search
     .list({
-      maxResults: 25,
+      maxResults: NUM_OF_MAX_RESULTS,
       part: "snippet",
       q: "study music",
       type: "video"
