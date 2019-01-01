@@ -9,12 +9,15 @@ const SCOPES = "https://www.googleapis.com/auth/youtube.readonly";
 
 const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
+const newVideoButton = document.getElementById("new-vide-button");
 const content = document.getElementById("content");
 const channelForm = document.getElementById("channel-form");
 const channelInput = document.getElementById("channel-input");
 const videoContainer = document.getElementById("video-container");
 
 const NUM_OF_MAX_RESULTS = 50;
+
+var studyVideoIds;
 
 // Load auth2 library
 function handleClientLoad() {
@@ -40,6 +43,7 @@ function initClient() {
 
       authorizeButton.onclick = handleAuthClick;
       signoutButton.onclick = handleSignoutClick;
+      newVideoButton.onclick = handleNewVideo;
     });
 }
 
@@ -53,6 +57,11 @@ function handleSignoutClick(event) {
   GoogleAuth.signOut();
 }
 
+function handleNewVideo(event) {
+  const videoId = videoIds[Math.floor(Math.random() * videoIds.length)];
+  displayVideo(videoId);
+}
+
 // Update UI Sign in state changes
 function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
@@ -60,10 +69,13 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "block";
     content.style.display = "block";
     videoContainer.style.display = "block";
-    displayStudyVideo();
+    displayStudyVideo().then(() => {
+      newVideoButton.style.display = "block";
+    });
   } else {
     authorizeButton.style.display = "block";
     signoutButton.style.display = "none";
+    newVideoButton.style.display = "none";
     content.style.display = "none";
     videoContainer.style.display = "none";
   }
@@ -72,12 +84,13 @@ function updateSigninStatus(isSignedIn) {
 function displayStudyVideo() {
   searchStudyVideo()
     .then(response => response.result.items)
-    .then(videos => videos.map(v => v.id.videoId))
+    .then(videos => {
+      studyVideoIds = videos.map(v => v.id.videoId);
+      return studyVideoIds;
+    })
     .then(videoIds => videoIds[Math.floor(Math.random() * videoIds.length)])
     .then(videoId => {
-      videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
-    src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-    frameborder="0"></iframe>`;
+      displayVideo(videoId);
     });
 }
 
@@ -92,6 +105,12 @@ function searchStudyVideo() {
     .then(response => {
       return response;
     });
+}
+
+function displayVideo(videoId) {
+  videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
+  src="https://www.youtube.com/embed/${videoId}?autoplay=1"
+  frameborder="0"></iframe>`;
 }
 
 function displayBreakVideo() {
