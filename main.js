@@ -66,8 +66,8 @@ function handleNewVideo(event) {
 }
 
 function updateTimer() {
-  const minutes = Math.floor(secondsRemaining / 60);
-  const seconds = secondsRemaining - minutes * 60;
+  let minutes = Math.floor(secondsRemaining / 60);
+  let seconds = secondsRemaining - minutes * 60;
 
   if (minutes < 10) {
     minutes = "0" + minutes;
