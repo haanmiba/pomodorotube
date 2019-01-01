@@ -6,6 +6,7 @@ const DISCOVERY_DOCS = [
   "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest"
 ];
 const SCOPES = "https://www.googleapis.com/auth/youtube.readonly";
+const NUM_OF_MAX_RESULTS = 50;
 
 const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
@@ -13,10 +14,11 @@ const newVideoButton = document.getElementById("new-video-button");
 const content = document.getElementById("content");
 const channelForm = document.getElementById("channel-form");
 const channelInput = document.getElementById("channel-input");
+const timerContainer = document.getElementById("timer-container");
 const videoContainer = document.getElementById("video-container");
 
-const NUM_OF_MAX_RESULTS = 50;
-
+var secondsRemaining;
+var timerInterval;
 var studyVideoIds;
 
 // Load auth2 library
@@ -63,6 +65,23 @@ function handleNewVideo(event) {
   displayVideo(videoId);
 }
 
+function updateTimer() {
+  const minutes = Math.floor(secondsRemaining / 60);
+  const seconds = secondsRemaining - minutes * 60;
+
+  timerContainer.innerHTML = `<h1>${minutes}:${seconds}</h1>`;
+
+  secondsRemaining--;
+  if (secondsRemaining < 0) {
+    clearTimer();
+  }
+}
+
+function clearTimer() {
+  timerContainer.innerHTML = "";
+  clearInterval(timerInterval);
+}
+
 // Update UI Sign in state changes
 function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
@@ -72,6 +91,8 @@ function updateSigninStatus(isSignedIn) {
     videoContainer.style.display = "block";
     displayStudyVideo().then(() => {
       newVideoButton.style.display = "block";
+      secondsRemaining = 1 * 60;
+      timerInterval = setInterval(updateTimer, 1000);
     });
   } else {
     authorizeButton.style.display = "block";
