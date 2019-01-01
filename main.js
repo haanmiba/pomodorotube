@@ -17,9 +17,11 @@ const channelInput = document.getElementById("channel-input");
 const timerContainer = document.getElementById("timer-container");
 const videoContainer = document.getElementById("video-container");
 
+var currentPhase;
 var secondsRemaining;
 var timerInterval;
-var studyVideoIds;
+var focusVideoIds;
+var breakVideoIds;
 
 // Load auth2 library
 function handleClientLoad() {
@@ -45,7 +47,7 @@ function initClient() {
 
       authorizeButton.onclick = handleAuthClick;
       signoutButton.onclick = handleSignoutClick;
-      newVideoButton.onclick = handleNewVideo;
+      newVideoButton.onclick = handleNewFocusVideo;
     });
 }
 
@@ -59,10 +61,11 @@ function handleSignoutClick(event) {
   GoogleAuth.signOut();
 }
 
-function handleNewVideo(event) {
+function handleNewFocusVideo(event = undefined) {
   const videoId =
-    studyVideoIds[Math.floor(Math.random() * studyVideoIds.length)];
+    focusVideoIds[Math.floor(Math.random() * focusVideoIds.length)];
   displayVideo(videoId);
+  return true;
 }
 
 function updateTimer() {
@@ -96,11 +99,17 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "block";
     content.style.display = "block";
     videoContainer.style.display = "block";
-    displayStudyVideo().then(() => {
-      newVideoButton.style.display = "block";
-      secondsRemaining = 1 * 60;
-      timerInterval = setInterval(updateTimer, 1000);
-    });
+    getFocusVideos()
+      .then(() => handleNewFocusVideo())
+      .then(() => {
+        newVideoButton.style.display = "block";
+        secondsRemaining = 1 * 60;
+        timerInterval = setInterval(updateTimer, 1000);
+        return true;
+      })
+      .then(() => {
+        getBreakVideos();
+      });
   } else {
     authorizeButton.style.display = "block";
     signoutButton.style.display = "none";
@@ -110,18 +119,16 @@ function updateSigninStatus(isSignedIn) {
   }
 }
 
-function displayStudyVideo() {
-  return searchStudyVideo()
+function getFocusVideos() {
+  return searchStudyVideos()
     .then(response => response.result.items)
     .then(videos => {
-      studyVideoIds = videos.map(v => v.id.videoId);
-      return studyVideoIds;
-    })
-    .then(videoIds => videoIds[Math.floor(Math.random() * videoIds.length)])
-    .then(videoId => displayVideo(videoId));
+      focusVideoIds = videos.map(v => v.id.videoId);
+      return focusVideoIds;
+    });
 }
 
-function searchStudyVideo() {
+function searchStudyVideos() {
   return gapi.client.youtube.search
     .list({
       maxResults: NUM_OF_MAX_RESULTS,
@@ -141,7 +148,7 @@ function displayVideo(videoId) {
   return true;
 }
 
-function displayBreakVideo() {
+function getBreakVideos() {
   getSubscriptions()
     .then(result =>
       result.map(channel => channel.snippet.resourceId.channelId).join(",")
@@ -169,13 +176,7 @@ function displayBreakVideo() {
       const filteredVideos = realVideos.filter(v =>
         filterVideoByMinuteLength(v, 5)
       );
-      return filteredVideos;
-    })
-    .then(filteredVideos => {
-      videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
-    src="https://www.youtube.com/embed/${filteredVideos[0].id}?autoplay=1"
-    frameborder="0"></iframe>
-  `;
+      breakVideoIds = filteredVideos;
     })
     .catch(err =>
       alert(`There was an issue getting the subscriptions: ${err}`)
