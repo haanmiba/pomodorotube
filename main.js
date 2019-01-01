@@ -9,7 +9,7 @@ const SCOPES = "https://www.googleapis.com/auth/youtube.readonly";
 
 const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
-const newVideoButton = document.getElementById("new-vide-button");
+const newVideoButton = document.getElementById("new-video-button");
 const content = document.getElementById("content");
 const channelForm = document.getElementById("channel-form");
 const channelInput = document.getElementById("channel-input");
