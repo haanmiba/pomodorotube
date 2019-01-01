@@ -16,8 +16,6 @@ const videoContainer = document.getElementById("video-container");
 
 const NUM_OF_MAX_RESULTS = 50;
 
-const defaultChannel = "techguyweb";
-
 // Load auth2 library
 function handleClientLoad() {
   gapi.load("client:auth2", initClient);
@@ -45,59 +43,6 @@ function initClient() {
     });
 }
 
-// Update UI Sign in state changes
-function updateSigninStatus(isSignedIn) {
-  if (isSignedIn) {
-    authorizeButton.style.display = "none";
-    signoutButton.style.display = "block";
-    content.style.display = "block";
-    videoContainer.style.display = "block";
-    getSubscriptions()
-      .then(result =>
-        result.map(channel => channel.snippet.resourceId.channelId).join(",")
-      )
-      .then(joinedIds =>
-        gapi.client.youtube.channels.list({
-          part: "contentDetails",
-          id: joinedIds,
-          maxResults: NUM_OF_MAX_RESULTS
-        })
-      )
-      .then(response =>
-        response.result.items.map(
-          channel => channel.contentDetails.relatedPlaylists.uploads
-        )
-      )
-      .then(playlistIds => getVideos(playlistIds))
-      .then(videos => videos.map(v => v.contentDetails.videoId))
-      .then(videoIds => getActualVideoObjects(videoIds))
-      .then(realVideos => {
-        realVideos.sort(compareVideosByPublishDate);
-        return realVideos;
-      })
-      .then(realVideos => {
-        const filteredVideos = realVideos.filter(v =>
-          filterVideoByMinuteLength(v, 5)
-        );
-        return filteredVideos;
-      })
-      .then(filteredVideos => {
-        videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
-        src="https://www.youtube.com/embed/${filteredVideos[0].id}?autoplay=1"
-        frameborder="0"></iframe>
-      `;
-      })
-      .catch(err =>
-        alert(`There was an issue getting the subscriptions: ${err}`)
-      );
-  } else {
-    authorizeButton.style.display = "block";
-    signoutButton.style.display = "none";
-    content.style.display = "none";
-    videoContainer.style.display = "none";
-  }
-}
-
 // Sign in the user upon button click
 function handleAuthClick(event) {
   GoogleAuth.signIn();
@@ -106,6 +51,63 @@ function handleAuthClick(event) {
 // Sign out the user upon button click
 function handleSignoutClick(event) {
   GoogleAuth.signOut();
+}
+
+// Update UI Sign in state changes
+function updateSigninStatus(isSignedIn) {
+  if (isSignedIn) {
+    authorizeButton.style.display = "none";
+    signoutButton.style.display = "block";
+    content.style.display = "block";
+    videoContainer.style.display = "block";
+    displayBreakVideo();
+  } else {
+    authorizeButton.style.display = "block";
+    signoutButton.style.display = "none";
+    content.style.display = "none";
+    videoContainer.style.display = "none";
+  }
+}
+
+function displayBreakVideo() {
+  getSubscriptions()
+    .then(result =>
+      result.map(channel => channel.snippet.resourceId.channelId).join(",")
+    )
+    .then(joinedIds =>
+      gapi.client.youtube.channels.list({
+        part: "contentDetails",
+        id: joinedIds,
+        maxResults: NUM_OF_MAX_RESULTS
+      })
+    )
+    .then(response =>
+      response.result.items.map(
+        channel => channel.contentDetails.relatedPlaylists.uploads
+      )
+    )
+    .then(playlistIds => getVideos(playlistIds))
+    .then(videos => videos.map(v => v.contentDetails.videoId))
+    .then(videoIds => getRealVideoObjects(videoIds))
+    .then(realVideos => {
+      realVideos.sort(compareVideosByPublishDate);
+      return realVideos;
+    })
+    .then(realVideos => {
+      const filteredVideos = realVideos.filter(v =>
+        filterVideoByMinuteLength(v, 5)
+      );
+      return filteredVideos;
+    })
+    .then(filteredVideos => {
+      videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
+    src="https://www.youtube.com/embed/${filteredVideos[0].id}?autoplay=1"
+    frameborder="0"></iframe>
+  `;
+    })
+    .catch(err =>
+      alert(`There was an issue getting the subscriptions: ${err}`)
+    );
 }
 
 function getSubscriptions() {
@@ -137,7 +139,7 @@ function getVideos(playlistIds, index = 0, videos = []) {
     });
 }
 
-function getActualVideoObjects(
+function getRealVideoObjects(
   videoIds,
   startIndex = 0,
   endIndex = NUM_OF_MAX_RESULTS,
@@ -155,7 +157,7 @@ function getActualVideoObjects(
     .then(response => {
       response.result.items.forEach(video => realVideos.push(video));
       if (end != videoIds.length) {
-        return getActualVideoObjects(
+        return getRealVideoObjects(
           videoIds,
           end,
           end + NUM_OF_MAX_RESULTS,
