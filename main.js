@@ -60,13 +60,27 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "block";
     content.style.display = "block";
     videoContainer.style.display = "block";
-    displayBreakVideo();
+    displayStudyVideo();
   } else {
     authorizeButton.style.display = "block";
     signoutButton.style.display = "none";
     content.style.display = "none";
     videoContainer.style.display = "none";
   }
+}
+
+function displayStudyVideo() {
+  searchStudyVideo().then(response => console.log(response));
+}
+
+function searchStudyVideo() {
+  gapi.client.youtube.search.list({
+    maxResults: 25,
+    part: "snippet",
+    q: "study music"
+  }).then(response => {
+    return response
+  })
 }
 
 function displayBreakVideo() {
@@ -183,7 +197,3 @@ function filterVideoByMinuteLength(video, minuteLength) {
   const minuteRegex = new RegExp(`T${minuteLength}M`);
   return minuteRegex.test(video.contentDetails.duration);
 }
-
-setTimeout(() => {
-  videoContainer.innerHTML = "";
-}, 60000);
