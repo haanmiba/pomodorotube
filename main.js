@@ -82,16 +82,14 @@ function updateSigninStatus(isSignedIn) {
 }
 
 function displayStudyVideo() {
-  searchStudyVideo()
+  return searchStudyVideo()
     .then(response => response.result.items)
     .then(videos => {
       studyVideoIds = videos.map(v => v.id.videoId);
       return studyVideoIds;
     })
     .then(videoIds => videoIds[Math.floor(Math.random() * videoIds.length)])
-    .then(videoId => {
-      displayVideo(videoId);
-    });
+    .then(videoId => displayVideo(videoId));
 }
 
 function searchStudyVideo() {
@@ -111,6 +109,7 @@ function displayVideo(videoId) {
   videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
   src="https://www.youtube.com/embed/${videoId}?autoplay=1"
   frameborder="0"></iframe>`;
+  return true;
 }
 
 function displayBreakVideo() {
