@@ -184,6 +184,7 @@ function getBreakVideos() {
         filterVideoByMinuteLength(v, 5)
       );
       breakVideoIds = filteredVideos;
+      console.log(breakVideoIds);
     })
     .catch(err =>
       alert(`There was an issue getting the subscriptions: ${err}`)
