@@ -58,7 +58,8 @@ function handleSignoutClick(event) {
 }
 
 function handleNewVideo(event) {
-  const videoId = videoIds[Math.floor(Math.random() * videoIds.length)];
+  const videoId =
+    studyVideoIds[Math.floor(Math.random() * studyVideoIds.length)];
   displayVideo(videoId);
 }
 
