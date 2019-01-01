@@ -96,7 +96,16 @@ function updateTimer() {
 function clearTimer() {
   timerContainer.innerHTML = "";
   clearInterval(timerInterval);
-  handleNewBreakVideo();
+  if (currentPhase === "focus") {
+    currentPhase = "break";
+    handleNewBreakVideo();
+    secondsRemaining = 5 * 60;
+  } else if (currentPhase === "break") {
+    currentPhase = "focus";
+    handleNewFocusVideo();
+    secondsRemaining = 25 * 60;
+  }
+  timerInterval = setInterval(updateTimer, 1000);
 }
 
 // Update UI Sign in state changes
@@ -111,6 +120,7 @@ function updateSigninStatus(isSignedIn) {
       .then(() => {
         newVideoButton.style.display = "block";
         secondsRemaining = 1 * 60;
+        currentPhase = "focus";
         timerInterval = setInterval(updateTimer, 1000);
         return true;
       })
