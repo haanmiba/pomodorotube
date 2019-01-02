@@ -84,8 +84,9 @@ function handleNewFocusVideo(event = undefined) {
 
 function handleNewShortBreakVideo(event = undefined) {
   clearTimeout(shortBreakVideoTimeout);
-  const videoId = shortBreakVideos[shortBreakVideoIndex++].id;
-  displayVideo(videoId);
+  const video = shortBreakVideos[shortBreakVideoIndex++];
+  displayVideo(video.id);
+  secondsRemaining = getVideoLength(video);
   shortBreakVideoTimeout = setTimeout(() => {
     newShortBreakVideoButton.style.display = "none";
   }, 10000);
@@ -323,4 +324,21 @@ function compareVideosByPublishDate(a, b) {
 function filterVideoByMinuteLength(video, minuteLength) {
   const minuteRegex = new RegExp(`T${minuteLength}M`);
   return minuteRegex.test(video.contentDetails.duration);
+}
+
+function getVideoLength(video) {
+  const digitsRegex = new RegExp("d+");
+  const timeMatches = video.contentDetails.duration.match(digitsRegex);
+  let numSeconds = 0;
+  if (timeMatches.length === 3) {
+    numSeconds += timeMatches[0] * 3600;
+    numSeconds += timeMatches[1] * 60;
+    numSeconds += timeMatches[2];
+  } else if (timeMatches.length === 2) {
+    numSeconds += timeMatches[0] * 60;
+    numSeconds += timeMatches[1];
+  } else if (timeMatches.length === 1) {
+    numSeconds += timeMatches[0];
+  }
+  return numSeconds;
 }
