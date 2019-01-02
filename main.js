@@ -107,6 +107,11 @@ function updateTimer() {
 function clearTimer() {
   timerContainer.innerHTML = "";
   clearInterval(timerInterval);
+  switchPhase();
+  timerInterval = setInterval(updateTimer, 1000);
+}
+
+function switchPhase() {
   if (currentPhase === "focus") {
     roundNumber++;
     updatePhaseNumber();
@@ -121,9 +126,9 @@ function clearTimer() {
   } else if (currentPhase === "break") {
     currentPhase = "focus";
     handleNewFocusVideo();
+    newFocusVideoButton.style.display = "block";
     secondsRemaining = 1 * SECONDS_IN_A_MINUTE;
   }
-  timerInterval = setInterval(updateTimer, 1000);
 }
 
 function updatePhaseNumber() {
