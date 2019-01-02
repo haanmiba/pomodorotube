@@ -130,7 +130,6 @@ function switchPhase() {
       newShortBreakVideoButton.style.display = "none";
     }, 10000);
     handleNewShortBreakVideo();
-    secondsRemaining = 1 * SECONDS_IN_A_MINUTE;
   } else if (currentPhase === "break") {
     currentPhase = "focus";
     handleNewFocusVideo();
@@ -330,8 +329,6 @@ function getVideoLength(video) {
   const digitsRegex = /\d+/g;
   let timeMatches = video.contentDetails.duration.match(digitsRegex);
   timeMatches = timeMatches.map(match => parseInt(match));
-  console.log(video.contentDetails.duration);
-  console.log(timeMatches);
   let numSeconds = 0;
   if (timeMatches.length === 3) {
     numSeconds += timeMatches[0] * 3600;
@@ -343,6 +340,5 @@ function getVideoLength(video) {
   } else if (timeMatches.length === 1) {
     numSeconds += timeMatches[0];
   }
-  console.log(numSeconds);
   return numSeconds;
 }
