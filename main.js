@@ -187,7 +187,6 @@ function getBreakVideos() {
     .then(playlistIds => getVideos(playlistIds))
     .then(videos => videos.map(v => v.contentDetails.videoId))
     .then(videoIds => getRealVideoObjects(videoIds))
-    .then(realVideos => realVideos.map(v => (v.played = false)))
     .then(realVideos => {
       realVideos.sort(compareVideosByPublishDate);
       breakVideos = realVideos;
