@@ -7,6 +7,7 @@ const DISCOVERY_DOCS = [
 ];
 const SCOPES = "https://www.googleapis.com/auth/youtube.readonly";
 const NUM_OF_MAX_RESULTS = 50;
+const NUM_ROUNDS = 4;
 
 const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
@@ -16,10 +17,12 @@ const channelForm = document.getElementById("channel-form");
 const channelInput = document.getElementById("channel-input");
 const timerContainer = document.getElementById("timer-container");
 const videoContainer = document.getElementById("video-container");
+const roundNumberContainer = document.getElementById("round-number-container");
 
 var currentPhase;
 var secondsRemaining;
 var timerInterval;
+var roundNumber;
 
 var focusVideoIds;
 var breakVideos;
@@ -99,6 +102,8 @@ function clearTimer() {
   timerContainer.innerHTML = "";
   clearInterval(timerInterval);
   if (currentPhase === "focus") {
+    roundNumber++;
+    updatePhaseNumber();
     currentPhase = "break";
     handleNewBreakVideo();
     secondsRemaining = 5 * 60;
@@ -108,6 +113,10 @@ function clearTimer() {
     secondsRemaining = 25 * 60;
   }
   timerInterval = setInterval(updateTimer, 1000);
+}
+
+function updatePhaseNumber() {
+  roundNumberContainer.innerHTML = `<p>Round: ${roundNumber}/${NUM_ROUNDS}</p>`;
 }
 
 // Update UI Sign in state changes
@@ -121,7 +130,9 @@ function updateSigninStatus(isSignedIn) {
       .then(() => handleNewFocusVideo())
       .then(() => {
         newVideoButton.style.display = "block";
+        roundNumberContainer.style.display = "block";
         secondsRemaining = 1 * 60;
+        roundNumber = 0;
         currentPhase = "focus";
         timerInterval = setInterval(updateTimer, 1000);
         return true;
