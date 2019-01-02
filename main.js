@@ -6,12 +6,17 @@ const DISCOVERY_DOCS = [
   "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest"
 ];
 const SCOPES = "https://www.googleapis.com/auth/youtube.readonly";
+
 const NUM_OF_MAX_RESULTS = 50;
 const NUM_ROUNDS = 4;
+const SECONDS_IN_A_MINUTE = 20;
 
 const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
-const newVideoButton = document.getElementById("new-video-button");
+const newFocusVideoButton = document.getElementById("new-focus-video-button");
+const newShortBreakVideoButton = document.getElementById(
+  "new-short-break-video-button"
+);
 const content = document.getElementById("content");
 const channelForm = document.getElementById("channel-form");
 const channelInput = document.getElementById("channel-input");
@@ -27,6 +32,7 @@ var roundNumber;
 var focusVideoIds;
 var breakVideos;
 var shortBreakVideos;
+var shortBreakVideoIndex;
 
 // Load auth2 library
 function handleClientLoad() {
@@ -52,7 +58,7 @@ function initClient() {
 
       authorizeButton.onclick = handleAuthClick;
       signoutButton.onclick = handleSignoutClick;
-      newVideoButton.onclick = handleNewFocusVideo;
+      newFocusVideoButton.onclick = handleNewFocusVideo;
     });
 }
 
@@ -73,15 +79,15 @@ function handleNewFocusVideo(event = undefined) {
   return true;
 }
 
-function handleNewBreakVideo(event = undefined) {
-  const videoId = shortBreakVideos[0].id;
+function handleNewShortBreakVideo(event = undefined) {
+  const videoId = shortBreakVideos[shortBreakVideoIndex++].id;
   displayVideo(videoId);
   return true;
 }
 
 function updateTimer() {
-  let minutes = Math.floor(secondsRemaining / 60);
-  let seconds = secondsRemaining - minutes * 60;
+  let minutes = Math.floor(secondsRemaining / SECONDS_IN_A_MINUTE);
+  let seconds = secondsRemaining - minutes * SECONDS_IN_A_MINUTE;
 
   if (minutes < 10) {
     minutes = "0" + minutes;
@@ -105,12 +111,17 @@ function clearTimer() {
     roundNumber++;
     updatePhaseNumber();
     currentPhase = "break";
-    handleNewBreakVideo();
-    secondsRemaining = 5 * 60;
+    newFocusVideoButton.style.display = "none";
+    newShortBreakVideoButton.style.display = "block";
+    setTimeout(() => {
+      newShortBreakVideoButton.style.display = "none";
+    }, 10000);
+    handleNewShortBreakVideo();
+    secondsRemaining = 1 * SECONDS_IN_A_MINUTE;
   } else if (currentPhase === "break") {
     currentPhase = "focus";
     handleNewFocusVideo();
-    secondsRemaining = 25 * 60;
+    secondsRemaining = 1 * SECONDS_IN_A_MINUTE;
   }
   timerInterval = setInterval(updateTimer, 1000);
 }
@@ -126,28 +137,33 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "block";
     content.style.display = "block";
     videoContainer.style.display = "block";
-    getFocusVideos()
-      .then(() => handleNewFocusVideo())
-      .then(() => {
-        roundNumberContainer.style.display = "block";
-        roundNumber = 0;
-        updatePhaseNumber();
-        newVideoButton.style.display = "block";
-        secondsRemaining = 1 * 60;
-        currentPhase = "focus";
-        timerInterval = setInterval(updateTimer, 1000);
-        return true;
-      })
-      .then(() => {
-        getBreakVideos();
-      });
+    initializeWebApp();
   } else {
     authorizeButton.style.display = "block";
     signoutButton.style.display = "none";
-    newVideoButton.style.display = "none";
+    newFocusVideoButton.style.display = "none";
     content.style.display = "none";
     videoContainer.style.display = "none";
   }
+}
+
+function initializeWebApp() {
+  getFocusVideos()
+    .then(() => handleNewFocusVideo())
+    .then(() => {
+      roundNumberContainer.style.display = "block";
+      roundNumber = 0;
+      updatePhaseNumber();
+      newFocusVideoButton.style.display = "block";
+      secondsRemaining = 1 * SECONDS_IN_A_MINUTE;
+      currentPhase = "focus";
+      timerInterval = setInterval(updateTimer, 1000);
+      shortBreakVideoIndex = 0;
+      return true;
+    })
+    .then(() => {
+      getBreakVideos();
+    });
 }
 
 function getFocusVideos() {
@@ -196,7 +212,7 @@ function getBreakVideos() {
         channel => channel.contentDetails.relatedPlaylists.uploads
       )
     )
-    .then(playlistIds => getVideos(playlistIds))
+    .then(playlistIds => getVideosFromPlaylists(playlistIds))
     .then(videos => videos.map(v => v.contentDetails.videoId))
     .then(videoIds => getRealVideoObjects(videoIds))
     .then(realVideos =>
@@ -234,7 +250,7 @@ function getSubscriptions() {
     });
 }
 
-function getVideos(playlistIds, index = 0, videos = []) {
+function getVideosFromPlaylists(playlistIds, index = 0, videos = []) {
   return gapi.client.youtube.playlistItems
     .list({
       part: "contentDetails",
@@ -244,7 +260,7 @@ function getVideos(playlistIds, index = 0, videos = []) {
     .then(response => {
       response.result.items.forEach(videoId => videos.push(videoId));
       if (index + 1 != playlistIds.length) {
-        return getVideos(playlistIds, index + 1, videos);
+        return getVideosFromPlaylists(playlistIds, index + 1, videos);
       } else {
         return videos;
       }
