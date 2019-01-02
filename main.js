@@ -129,10 +129,11 @@ function updateSigninStatus(isSignedIn) {
     getFocusVideos()
       .then(() => handleNewFocusVideo())
       .then(() => {
-        newVideoButton.style.display = "block";
         roundNumberContainer.style.display = "block";
-        secondsRemaining = 1 * 60;
         roundNumber = 0;
+        updatePhaseNumber();
+        newVideoButton.style.display = "block";
+        secondsRemaining = 1 * 60;
         currentPhase = "focus";
         timerInterval = setInterval(updateTimer, 1000);
         return true;
