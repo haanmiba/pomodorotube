@@ -340,5 +340,6 @@ function getVideoLength(video) {
   } else if (timeMatches.length === 1) {
     numSeconds += timeMatches[0];
   }
+  console.log(numSeconds);
   return numSeconds;
 }
