@@ -29,6 +29,8 @@ var secondsRemaining;
 var timerInterval;
 var roundNumber;
 
+var shortBreakVideoTimeout;
+
 var focusVideoIds;
 var breakVideos;
 var shortBreakVideos;
@@ -59,6 +61,7 @@ function initClient() {
       authorizeButton.onclick = handleAuthClick;
       signoutButton.onclick = handleSignoutClick;
       newFocusVideoButton.onclick = handleNewFocusVideo;
+      newShortBreakVideoButton.onclick = handleNewShortBreakVideo;
     });
 }
 
@@ -80,8 +83,12 @@ function handleNewFocusVideo(event = undefined) {
 }
 
 function handleNewShortBreakVideo(event = undefined) {
+  clearTimeout(shortBreakVideoTimeout);
   const videoId = shortBreakVideos[shortBreakVideoIndex++].id;
   displayVideo(videoId);
+  shortBreakVideoTimeout = setTimeout(() => {
+    newShortBreakVideoButton.style.display = "none";
+  }, 10000);
   return true;
 }
 
@@ -118,7 +125,7 @@ function switchPhase() {
     currentPhase = "break";
     newFocusVideoButton.style.display = "none";
     newShortBreakVideoButton.style.display = "block";
-    setTimeout(() => {
+    shortBreakVideoTimeout = setTimeout(() => {
       newShortBreakVideoButton.style.display = "none";
     }, 10000);
     handleNewShortBreakVideo();
