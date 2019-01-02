@@ -329,6 +329,8 @@ function filterVideoByMinuteLength(video, minuteLength) {
 function getVideoLength(video) {
   const digitsRegex = /\d+/;
   const timeMatches = video.contentDetails.duration.match(digitsRegex);
+  console.log(video.contentDetails.duration);
+  console.log(timeMatches);
   let numSeconds = 0;
   if (timeMatches.length === 3) {
     numSeconds += timeMatches[0] * 3600;
