@@ -9,7 +9,7 @@ const SCOPES = "https://www.googleapis.com/auth/youtube.readonly";
 
 const NUM_OF_MAX_RESULTS = 50;
 const NUM_ROUNDS = 4;
-const SECONDS_IN_A_MINUTE = 20;
+const SECONDS_IN_A_MINUTE = 60;
 
 const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
