@@ -126,6 +126,7 @@ function switchPhase() {
   } else if (currentPhase === "break") {
     currentPhase = "focus";
     handleNewFocusVideo();
+    console.log("BACK TO WORK!");
     newFocusVideoButton.style.display = "block";
     secondsRemaining = 1 * SECONDS_IN_A_MINUTE;
   }
