@@ -10,6 +10,7 @@ const SCOPES = "https://www.googleapis.com/auth/youtube.readonly";
 const NUM_OF_MAX_RESULTS = 50;
 const NUM_ROUNDS = 4;
 const SECONDS_IN_A_MINUTE = 60;
+const THRESHOLD_SECONDS = 15;
 
 const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
@@ -86,7 +87,7 @@ function handleNewShortBreakVideo(event = undefined) {
   clearTimeout(shortBreakVideoTimeout);
   const video = shortBreakVideos[shortBreakVideoIndex++];
   displayVideo(video.id);
-  secondsRemaining = getVideoLength(video);
+  secondsRemaining = getVideoLength(video) + THRESHOLD_SECONDS;
   shortBreakVideoTimeout = setTimeout(() => {
     newShortBreakVideoButton.style.display = "none";
   }, 10000);
