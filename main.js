@@ -14,6 +14,7 @@ const THRESHOLD_SECONDS = 15;
 
 const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
+const skipButton = document.getElementById("skip-button");
 const newFocusVideoButton = document.getElementById("new-focus-video-button");
 const newShortBreakVideoButton = document.getElementById(
   "new-short-break-video-button"
@@ -63,6 +64,7 @@ function initClient() {
       signoutButton.onclick = handleSignoutClick;
       newFocusVideoButton.onclick = handleNewFocusVideo;
       newShortBreakVideoButton.onclick = handleNewShortBreakVideo;
+      skipButton.onclick = clearTimer;
     });
 }
 
@@ -113,7 +115,7 @@ function updateTimer() {
   }
 }
 
-function clearTimer() {
+function clearTimer(event = undefined) {
   timerContainer.innerHTML = "";
   clearInterval(timerInterval);
   switchPhase();
@@ -134,7 +136,6 @@ function switchPhase() {
   } else if (currentPhase === "break") {
     currentPhase = "focus";
     handleNewFocusVideo();
-    console.log("BACK TO WORK!");
     newFocusVideoButton.style.display = "block";
     secondsRemaining = 1 * SECONDS_IN_A_MINUTE;
   }
@@ -332,11 +333,11 @@ function getVideoLength(video) {
   timeMatches = timeMatches.map(match => parseInt(match));
   let numSeconds = 0;
   if (timeMatches.length === 3) {
-    numSeconds += timeMatches[0] * 3600;
-    numSeconds += timeMatches[1] * 60;
+    numSeconds += timeMatches[0] * Math.pow(SECONDS_IN_A_MINUTE, 2);
+    numSeconds += timeMatches[1] * SECONDS_IN_A_MINUTE;
     numSeconds += timeMatches[2];
   } else if (timeMatches.length === 2) {
-    numSeconds += timeMatches[0] * 60;
+    numSeconds += timeMatches[0] * SECONDS_IN_A_MINUTE;
     numSeconds += timeMatches[1];
   } else if (timeMatches.length === 1) {
     numSeconds += timeMatches[0];
