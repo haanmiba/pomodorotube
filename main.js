@@ -112,8 +112,14 @@ function updateTimer() {
 
   timerContainer.innerHTML = `<h1>${minutes}:${seconds}</h1>`;
 
-  const totalTime = currentPhase === "focus" ? (FOCUS_MINUTES * SECONDS_IN_A_MINUTE) : (SHORT_BREAK_MINUTES * SECONDS_IN_A_MINUTE);
-  progressBar.style.width = `${Math.round((secondsRemaining/totalTime) * 100)}%`
+  const totalTime =
+    currentPhase === "focus"
+      ? FOCUS_MINUTES * SECONDS_IN_A_MINUTE
+      : SHORT_BREAK_MINUTES * SECONDS_IN_A_MINUTE;
+      
+  progressBar.style.width = `${Math.round(
+    ((totalTime - secondsRemaining) / totalTime) * 100
+  )}%`;
 
   secondsRemaining--;
   if (secondsRemaining < 0) {
