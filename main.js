@@ -169,6 +169,7 @@ function updateSigninStatus(isSignedIn) {
     authorizeButton.style.display = "block";
     signoutButton.style.display = "none";
     progressBar.style.display = "none";
+    skipButton.style.display = "none";
     newFocusVideoButton.style.display = "none";
     content.style.display = "none";
     videoContainer.style.display = "none";
@@ -191,6 +192,10 @@ function initializeWebApp() {
     })
     .then(() => {
       getBreakVideos();
+      return true;
+    })
+    .then(() => {
+      skipButton.style.display = "block";
     });
 }
 
