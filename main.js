@@ -129,10 +129,12 @@ function updateTimer() {
 
 function handlePausePlayButton(event) {
   if (timerPaused) {
+    timerContainer.classList.remove("grey-text", "lighten-2");
     timerInterval = setInterval(updateTimer, 1000);
     timerPaused = false;
     pauseButton.innerHTML = "Pause";
   } else {
+    timerContainer.classList.add("grey-text", "lighten-2");
     clearInterval(timerInterval);
     timerPaused = true;
     pauseButton.innerHTML = "Play";
