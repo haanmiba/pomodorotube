@@ -131,9 +131,11 @@ function handlePausePlayButton(event) {
   if (timerPaused) {
     timerInterval = setInterval(updateTimer, 1000);
     timerPaused = false;
+    pauseButton.innerHTML = "Pause";
   } else {
     clearInterval(timerInterval);
     timerPaused = true;
+    pauseButton.innerHTML = "Play";
   }
 }
 
