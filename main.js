@@ -129,13 +129,15 @@ function updateTimer() {
 function clearTimer(event = undefined) {
   timerContainer.innerHTML = "";
   clearInterval(timerInterval);
-  switchPhase();
+  switchPhase(event);
   timerInterval = setInterval(updateTimer, 1000);
 }
 
-function switchPhase() {
+function switchPhase(event) {
   if (currentPhase === "focus") {
-    roundNumber++;
+    if (event) {
+      roundNumber++;
+    }
     updatePhaseNumber();
     currentPhase = "break";
     newFocusVideoButton.style.display = "none";
