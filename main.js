@@ -171,7 +171,7 @@ function switchPhase(event) {
 }
 
 function updatePhaseNumber() {
-  roundNumberContainer.innerHTML = `<h3>Round: ${roundNumber}/${NUM_ROUNDS}</h3>`;
+  roundNumberContainer.innerHTML = `<h5>Round: ${roundNumber}/${NUM_ROUNDS}</h5>`;
 }
 
 // Update UI Sign in state changes
