@@ -150,6 +150,7 @@ function switchPhase(event) {
     currentPhase = "focus";
     handleNewFocusVideo();
     newFocusVideoButton.style.display = "block";
+    newShortBreakVideoButton.style.display = "none";
     secondsRemaining = FOCUS_MINUTES * SECONDS_IN_A_MINUTE;
   }
 }
