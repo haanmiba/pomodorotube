@@ -11,7 +11,6 @@ const NUM_OF_MAX_RESULTS = 50;
 const NUM_ROUNDS = 4;
 const SECONDS_IN_A_MINUTE = 60;
 const THRESHOLD_SECONDS = 15;
-const SHORT_BREAK_MINUTES = 5;
 const FOCUS_MINUTES = 25;
 
 const authorizeButton = document.getElementById("authorize-button");
@@ -30,6 +29,7 @@ const videoContainer = document.getElementById("video-container");
 const roundNumberContainer = document.getElementById("round-number-container");
 
 var currentPhase;
+var secondsInCurrentPhase;
 var secondsRemaining;
 var timerInterval;
 var roundNumber;
@@ -93,6 +93,7 @@ function handleNewShortBreakVideo(event = undefined) {
   const video = shortBreakVideos[shortBreakVideoIndex++];
   displayVideo(video.id);
   secondsRemaining = getVideoLength(video) + THRESHOLD_SECONDS;
+  secondsInCurrentPhase = secondsRemaining;
   shortBreakVideoTimeout = setTimeout(() => {
     newShortBreakVideoButton.style.display = "none";
   }, 10000);
@@ -112,12 +113,7 @@ function updateTimer() {
 
   timerContainer.innerHTML = `<h1>${minutes}:${seconds}</h1>`;
 
-  const totalTime =
-    currentPhase === "focus"
-      ? FOCUS_MINUTES * SECONDS_IN_A_MINUTE
-      : SHORT_BREAK_MINUTES * SECONDS_IN_A_MINUTE;
-
-  progressBar.style.width = `${((totalTime - secondsRemaining) / totalTime) *
+  progressBar.style.width = `${((secondsInCurrentPhase - secondsRemaining) / secondsInCurrentPhase) *
     100}%`;
 
   secondsRemaining--;
@@ -152,6 +148,7 @@ function switchPhase(event) {
     newFocusVideoButton.style.display = "block";
     newShortBreakVideoButton.style.display = "none";
     secondsRemaining = FOCUS_MINUTES * SECONDS_IN_A_MINUTE;
+    secondsInCurrentPhase = secondsRemaining;
   }
 }
 
@@ -188,6 +185,7 @@ function initializeWebApp() {
       updatePhaseNumber();
       newFocusVideoButton.style.display = "block";
       secondsRemaining = FOCUS_MINUTES * SECONDS_IN_A_MINUTE;
+      secondsInCurrentPhase = secondsRemaining;
       currentPhase = "focus";
       timerInterval = setInterval(updateTimer, 1000);
       shortBreakVideoIndex = 0;
