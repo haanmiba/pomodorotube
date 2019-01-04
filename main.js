@@ -199,6 +199,7 @@ function initializeWebApp() {
     .then(() => handleNewFocusVideo())
     .then(() => {
       pauseButton.style.display = "block";
+      skipButton.style.display = "block";
       roundNumberContainer.style.display = "block";
       roundNumber = 0;
       updatePhaseNumber();
@@ -275,9 +276,7 @@ function getBreakVideos() {
       realVideos.sort(compareVideosByPublishDate);
       breakVideos = realVideos;
       console.log(breakVideos);
-      skipButton.style.display = "block";
-      pauseButton.classList.remove("offset-s7");
-      pauseButton.classList.add("offset-s2");
+      skipButton.classList.remove("disabled");
       return realVideos;
     })
     .then(realVideos => {
