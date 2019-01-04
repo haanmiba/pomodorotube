@@ -17,6 +17,7 @@ const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
 const progressBar = document.getElementById("progress-bar");
 const skipButton = document.getElementById("skip-button");
+const pauseButton = document.getElementById("pause-button");
 const newFocusVideoButton = document.getElementById("new-focus-video-button");
 const newShortBreakVideoButton = document.getElementById(
   "new-short-break-video-button"
@@ -40,6 +41,8 @@ var focusVideoIds;
 var breakVideos;
 var shortBreakVideos;
 var shortBreakVideoIndex;
+
+var timerPaused;
 
 // Load auth2 library
 function handleClientLoad() {
@@ -68,6 +71,7 @@ function initClient() {
       newFocusVideoButton.onclick = handleNewFocusVideo;
       newShortBreakVideoButton.onclick = handleNewShortBreakVideo;
       skipButton.onclick = clearTimer;
+      pauseButton.onclick = handlePausePlayButton;
     });
 }
 
@@ -113,12 +117,23 @@ function updateTimer() {
 
   timerContainer.innerHTML = `<h1>${minutes}:${seconds}</h1>`;
 
-  progressBar.style.width = `${((secondsInCurrentPhase - secondsRemaining) / secondsInCurrentPhase) *
+  progressBar.style.width = `${((secondsInCurrentPhase - secondsRemaining) /
+    secondsInCurrentPhase) *
     100}%`;
 
   secondsRemaining--;
   if (secondsRemaining < 0) {
     clearTimer();
+  }
+}
+
+function handlePausePlayButton(event) {
+  if (timerPaused) {
+    timerInterval = setInterval(updateTimer, 1000);
+    timerPaused = false;
+  } else {
+    clearInterval(timerInterval);
+    timerPaused = true;
   }
 }
 
@@ -170,6 +185,7 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "none";
     progressBar.style.display = "none";
     skipButton.style.display = "none";
+    pauseButton.style.display = "none";
     newFocusVideoButton.style.display = "none";
     content.style.display = "none";
     videoContainer.style.display = "none";
@@ -180,6 +196,7 @@ function initializeWebApp() {
   getFocusVideos()
     .then(() => handleNewFocusVideo())
     .then(() => {
+      pauseButton.style.display = "block";
       roundNumberContainer.style.display = "block";
       roundNumber = 0;
       updatePhaseNumber();
@@ -187,6 +204,7 @@ function initializeWebApp() {
       secondsRemaining = FOCUS_MINUTES * SECONDS_IN_A_MINUTE;
       secondsInCurrentPhase = secondsRemaining;
       currentPhase = "focus";
+      timerPaused = false;
       timerInterval = setInterval(updateTimer, 1000);
       shortBreakVideoIndex = 0;
       return true;
@@ -349,14 +367,17 @@ function getVideoLength(video) {
   timeMatches = timeMatches.map(match => parseInt(match));
   let numSeconds = 0;
   if (timeMatches.length === 3) {
-    numSeconds += timeMatches[0] * Math.pow(SECONDS_IN_A_MINUTE, 2);
-    numSeconds += timeMatches[1] * SECONDS_IN_A_MINUTE;
-    numSeconds += timeMatches[2];
+    const [hours, minutes, seconds] = timeMatches;
+    numSeconds += hours * Math.pow(SECONDS_IN_A_MINUTE, 2);
+    numSeconds += minutes * SECONDS_IN_A_MINUTE;
+    numSeconds += seconds;
   } else if (timeMatches.length === 2) {
-    numSeconds += timeMatches[0] * SECONDS_IN_A_MINUTE;
-    numSeconds += timeMatches[1];
+    const [minutes, seconds] = timeMatches;
+    numSeconds += minutes * SECONDS_IN_A_MINUTE;
+    numSeconds += seconds;
   } else if (timeMatches.length === 1) {
-    numSeconds += timeMatches[0];
+    const [seconds] = timeMatches;
+    numSeconds += seconds;
   }
   return numSeconds;
 }
