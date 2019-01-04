@@ -274,6 +274,8 @@ function getBreakVideos() {
       breakVideos = realVideos;
       console.log(breakVideos);
       skipButton.style.display = "block";
+      pauseButton.classList.remove("offset-s7");
+      pauseButton.classList.add("offset-s2");
       return realVideos;
     })
     .then(realVideos => {
