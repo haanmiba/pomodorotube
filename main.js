@@ -11,10 +11,12 @@ const NUM_OF_MAX_RESULTS = 50;
 const NUM_ROUNDS = 4;
 const SECONDS_IN_A_MINUTE = 60;
 const THRESHOLD_SECONDS = 15;
+const SHORT_BREAK_MINUTES = 5;
 const FOCUS_MINUTES = 25;
 
 const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
+const progressBar = document.getElementById("progress-bar");
 const skipButton = document.getElementById("skip-button");
 const newFocusVideoButton = document.getElementById("new-focus-video-button");
 const newShortBreakVideoButton = document.getElementById(
@@ -110,6 +112,9 @@ function updateTimer() {
 
   timerContainer.innerHTML = `<h1>${minutes}:${seconds}</h1>`;
 
+  const totalTime = currentPhase === "focus" ? (FOCUS_MINUTES * SECONDS_IN_A_MINUTE) : (SHORT_BREAK_MINUTES * SECONDS_IN_A_MINUTE);
+  progressBar.style.width = `${Math.round((secondsRemaining/totalTime) * 100)}%`
+
   secondsRemaining--;
   if (secondsRemaining < 0) {
     clearTimer();
@@ -151,12 +156,14 @@ function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
     authorizeButton.style.display = "none";
     signoutButton.style.display = "block";
+    progressBar.style.display = "block";
     content.style.display = "block";
     videoContainer.style.display = "block";
     initializeWebApp();
   } else {
     authorizeButton.style.display = "block";
     signoutButton.style.display = "none";
+    progressBar.style.display = "none";
     newFocusVideoButton.style.display = "none";
     content.style.display = "none";
     videoContainer.style.display = "none";
