@@ -192,10 +192,6 @@ function initializeWebApp() {
     })
     .then(() => {
       getBreakVideos();
-      return true;
-    })
-    .then(() => {
-      skipButton.style.display = "block";
     });
 }
 
@@ -258,6 +254,7 @@ function getBreakVideos() {
       realVideos.sort(compareVideosByPublishDate);
       breakVideos = realVideos;
       console.log(breakVideos);
+      skipButton.style.display = "block";
       return realVideos;
     })
     .then(realVideos => {
