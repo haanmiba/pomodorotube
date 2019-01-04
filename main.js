@@ -135,7 +135,7 @@ function clearTimer(event = undefined) {
 
 function switchPhase(event) {
   if (currentPhase === "focus") {
-    if (event) {
+    if (event !== undefined) {
       roundNumber++;
     }
     updatePhaseNumber();
