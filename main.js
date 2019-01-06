@@ -145,6 +145,9 @@ function clearTimer(event = undefined) {
   clearInterval(timerInterval);
   switchPhase(event);
   timerInterval = setInterval(updateTimer, 1000);
+  if (timerPaused) {
+    handlePausePlayButton();
+  }
 }
 
 function switchPhase(event) {
