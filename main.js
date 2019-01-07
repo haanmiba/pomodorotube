@@ -83,6 +83,17 @@ function handleAuthClick(event) {
 // Sign out the user upon button click
 function handleSignoutClick(event) {
   GoogleAuth.signOut();
+  clearInterval(timerInterval);
+  currentPhase = "";
+  secondsInCurrentPhase = -1;
+  secondsRemaining = -1;
+  roundNumber = 0;
+  clearTimeout(shortBreakVideoTimeout);
+  focusVideoIds = [];
+  breakVideos = [];
+  shortBreakVideos = [];
+  shortBreakVideoIndex = 0;
+  timerPaused = false;
 }
 
 function handleNewFocusVideo(event = undefined) {
