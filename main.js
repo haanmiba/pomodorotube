@@ -66,6 +66,7 @@ function initClient() {
       // Handle initial sign in state
       updateSigninStatus(GoogleAuth.isSignedIn.get());
 
+      // Add event handlers to buttons
       authorizeButton.onclick = handleAuthClick;
       signoutButton.onclick = handleSignoutClick;
       newFocusVideoButton.onclick = handleNewFocusVideo;
