@@ -23,8 +23,6 @@ const newShortBreakVideoButton = document.getElementById(
   "new-short-break-video-button"
 );
 const content = document.getElementById("content");
-const channelForm = document.getElementById("channel-form");
-const channelInput = document.getElementById("channel-input");
 const timerContainer = document.getElementById("timer-container");
 const videoContainer = document.getElementById("video-container");
 const roundNumberContainer = document.getElementById("round-number-container");
@@ -156,7 +154,7 @@ function handlePausePlayButton(event) {
 function clearTimer(event = undefined) {
   clearInterval(timerInterval);
   switchPhase(event);
-  timerInterval = setInterval(updateTimer, 1000);
+  // timerInterval = setInterval(updateTimer, 1000);
   if (timerPaused) {
     handlePausePlayButton();
   }
