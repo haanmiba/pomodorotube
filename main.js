@@ -11,7 +11,7 @@ const NUM_OF_MAX_RESULTS = 50;
 const NUM_ROUNDS = 4;
 const SECONDS_IN_A_MINUTE = 60;
 const THRESHOLD_SECONDS = 15;
-const FOCUS_MINUTES = 25;
+const FOCUS_MINUTES = 1;
 
 const authorizeButton = document.getElementById("authorize-button");
 const signoutButton = document.getElementById("signout-button");
