@@ -154,7 +154,9 @@ function handlePausePlayButton(event) {
 function clearTimer(event = undefined) {
   clearInterval(timerInterval);
   switchPhase(event);
-  // timerInterval = setInterval(updateTimer, 1000);
+  if (event === undefined) {
+    timerInterval = setInterval(updateTimer, 1000);
+  }
   if (timerPaused) {
     handlePausePlayButton();
   }
