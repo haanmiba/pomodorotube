@@ -290,23 +290,24 @@ function onPlayerReady(event) {
 
 function onPlayerStateChange(event) {
   switch (event.data) {
-    case -1:
-      console.log("UNSTARTED!");
-      break;
     case YT.PlayerState.ENDED:
       console.log("ENDED!");
+      clearTimer();
       break;
     case YT.PlayerState.PLAYING:
       console.log("PLAYING!");
+      if (timerPaused) {
+        handlePausePlayButton();
+      }
       break;
     case YT.PlayerState.PAUSED:
       console.log("PAUSED!");
+      if (!timerPaused) {
+        handlePausePlayButton();
+      }
       break;
     case YT.PlayerState.BUFFERING:
       console.log("BUFFERING!");
-      break;
-    case YT.PlayerState.CUED:
-      console.log("CUED!");
       break;
   }
 }
