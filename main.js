@@ -273,7 +273,8 @@ function displayVideo(videoId) {
       width: "640",
       videoId: videoId,
       events: {
-        onReady: onPlayerReady
+        onReady: onPlayerReady,
+        onStateChange: onPlayerStateChange
       }
     });
   } else {
@@ -285,6 +286,29 @@ function displayVideo(videoId) {
 
 function onPlayerReady(event) {
   event.target.playVideo();
+}
+
+function onPlayerStateChange(event) {
+  switch (event.data) {
+    case -1:
+      console.log("UNSTARTED!");
+      break;
+    case YT.PlayerState.ENDED:
+      console.log("ENDED!");
+      break;
+    case YT.PlayerState.PLAYING:
+      console.log("PLAYING!");
+      break;
+    case YT.PlayerState.PAUSED:
+      console.log("PAUSED!");
+      break;
+    case YT.PlayerState.BUFFERING:
+      console.log("BUFFERING!");
+      break;
+    case YT.PlayerState.CUED:
+      console.log("CUED!");
+      break;
+  }
 }
 
 function getBreakVideos() {
