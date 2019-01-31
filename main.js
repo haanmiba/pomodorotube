@@ -398,7 +398,7 @@ function getRealVideoObjects(
       maxResults: NUM_OF_MAX_RESULTS
     })
     .then(response => {
-      response.result.items.forEach(video => realVideos.push(video));
+      realVideos = realVideos.concat(response.result.items);
       if (end != videoIds.length) {
         return getRealVideoObjects(
           videoIds,
