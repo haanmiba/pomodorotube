@@ -156,14 +156,14 @@ function handlePausePlayButton(event) {
     timerPaused = false;
     pauseButton.innerHTML = "Pause";
     player.playVideo();
-    console.log("PLAYING VIDEO!")
+    console.log("PLAYING VIDEO!");
   } else {
     timerContainer.classList.add("grey-text", "lighten-2");
     clearInterval(timerInterval);
     timerPaused = true;
     pauseButton.innerHTML = "Play";
     player.pauseVideo();
-    console.log("PAUSING VIDEO!")
+    console.log("PAUSING VIDEO!");
   }
 }
 
@@ -294,17 +294,22 @@ function onPlayerReady(event) {
 
 function onPlayerStateChange(event) {
   switch (event.data) {
+    case -1:
+      console.log("STATE: UNSTARTED!");
+      break;
     case YT.PlayerState.ENDED:
       if (currentPhase === "break") {
         clearTimer();
       }
       break;
     case YT.PlayerState.PLAYING:
+      console.log("STATE: PLAYING!");
       if (timerPaused) {
         handlePausePlayButton();
       }
       break;
     case YT.PlayerState.PAUSED:
+      console.log("STATE: PAUSED!");
       if (!timerPaused) {
         handlePausePlayButton();
       }
