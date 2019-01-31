@@ -267,14 +267,18 @@ function searchStudyVideos() {
 }
 
 function displayVideo(videoId) {
-  player = new YT.Player("player", {
-    height: "360",
-    width: "640",
-    videoId: videoId,
-    events: {
-      onReady: onPlayerReady
-    }
-  });
+  if (player === undefined) {
+    player = new YT.Player("player", {
+      height: "360",
+      width: "640",
+      videoId: videoId,
+      events: {
+        onReady: onPlayerReady
+      }
+    });
+  } else {
+    player.cueVideoById(videoId);
+  }
   return true;
 }
 
@@ -311,7 +315,6 @@ function getBreakVideos() {
     .then(realVideos => {
       realVideos.sort(compareVideosByPublishDate);
       breakVideos = realVideos;
-      console.log(breakVideos);
       skipButton.classList.remove("disabled");
       return realVideos;
     })
