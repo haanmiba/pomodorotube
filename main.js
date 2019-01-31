@@ -24,6 +24,7 @@ const newShortBreakVideoButton = document.getElementById(
 );
 const content = document.getElementById("content");
 const timerContainer = document.getElementById("timer-container");
+const syncCheckbox = document.getElementById("sync-checkbox");
 const videoContainer = document.getElementById("video-container");
 const roundNumberContainer = document.getElementById("round-number-container");
 
@@ -42,6 +43,7 @@ var shortBreakVideos;
 var shortBreakVideoIndex;
 
 var timerPaused;
+var playerSyncedWithTimer;
 
 // Load auth2 library
 function handleClientLoad() {
@@ -81,6 +83,7 @@ function initClient() {
       signoutButton.onclick = handleSignoutClick;
       newFocusVideoButton.onclick = handleNewFocusVideo;
       newShortBreakVideoButton.onclick = handleNewShortBreakVideo;
+      syncCheckbox.onchange = handleSyncCheckboxChange;
       skipButton.onclick = clearTimer;
       pauseButton.onclick = handlePausePlayButton;
     });
@@ -105,6 +108,7 @@ function handleSignoutClick(event) {
   shortBreakVideos = [];
   shortBreakVideoIndex = 0;
   timerPaused = false;
+  playerSyncedWithTimer = false;
 }
 
 function handleNewFocusVideo(event = undefined) {
@@ -124,6 +128,10 @@ function handleNewShortBreakVideo(event = undefined) {
     newShortBreakVideoButton.style.display = "none";
   }, 10000);
   return true;
+}
+
+function handleSyncCheckboxChange(event) {
+  console.log(event.target.value);
 }
 
 function updateTimer() {
@@ -241,6 +249,7 @@ function initializeWebApp() {
       secondsInCurrentPhase = secondsRemaining;
       currentPhase = "focus";
       timerPaused = false;
+      playerSyncedWithTimer = true;
       timerInterval = setInterval(updateTimer, 1000);
       shortBreakVideoIndex = 0;
       return true;
