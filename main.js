@@ -155,14 +155,18 @@ function handlePausePlayButton(event) {
     timerInterval = setInterval(updateTimer, 1000);
     timerPaused = false;
     pauseButton.innerHTML = "Pause";
-    player.playVideo();
+    if (event !== undefined) {
+      player.playVideo();
+    }
     console.log("PLAYING VIDEO!");
   } else {
     timerContainer.classList.add("grey-text", "lighten-2");
     clearInterval(timerInterval);
     timerPaused = true;
     pauseButton.innerHTML = "Play";
-    player.pauseVideo();
+    if (event !== undefined) {
+      player.pauseVideo();
+    }
     console.log("PAUSING VIDEO!");
   }
 }
