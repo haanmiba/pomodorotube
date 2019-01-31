@@ -131,7 +131,7 @@ function handleNewShortBreakVideo(event = undefined) {
 }
 
 function handleSyncCheckboxChange(event) {
-  console.log(event.target.value);
+  console.log(event.target.checked);
 }
 
 function updateTimer() {
