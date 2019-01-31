@@ -278,6 +278,7 @@ function displayVideo(videoId) {
     });
   } else {
     player.cueVideoById(videoId);
+    player.playVideo();
   }
   return true;
 }
