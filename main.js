@@ -131,7 +131,7 @@ function handleNewShortBreakVideo(event = undefined) {
 }
 
 function handleSyncCheckboxChange(event) {
-  console.log(event.target.checked);
+  playerSyncedWithTimer = event.target.checked;
 }
 
 function updateTimer() {
@@ -163,7 +163,7 @@ function handlePausePlayButton(event) {
     timerInterval = setInterval(updateTimer, 1000);
     timerPaused = false;
     pauseButton.innerHTML = "Pause";
-    if (event !== undefined) {
+    if (event !== undefined && playerSyncedWithTimer) {
       player.playVideo();
     }
   } else {
@@ -171,7 +171,7 @@ function handlePausePlayButton(event) {
     clearInterval(timerInterval);
     timerPaused = true;
     pauseButton.innerHTML = "Play";
-    if (event !== undefined) {
+    if (event !== undefined && playerSyncedWithTimer) {
       player.pauseVideo();
     }
   }
@@ -313,12 +313,12 @@ function onPlayerStateChange(event) {
       }
       break;
     case YT.PlayerState.PLAYING:
-      if (timerPaused) {
+      if (timerPaused && playerSyncedWithTimer) {
         handlePausePlayButton();
       }
       break;
     case YT.PlayerState.PAUSED:
-      if (!timerPaused) {
+      if (!timerPaused && playerSyncedWithTimer) {
         handlePausePlayButton();
       }
       break;
