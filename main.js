@@ -27,6 +27,7 @@ const timerContainer = document.getElementById("timer-container");
 const videoContainer = document.getElementById("video-container");
 const roundNumberContainer = document.getElementById("round-number-container");
 
+var player;
 var currentPhase;
 var secondsInCurrentPhase;
 var secondsRemaining;
@@ -44,7 +45,18 @@ var timerPaused;
 
 // Load auth2 library
 function handleClientLoad() {
-  gapi.load("client:auth2", initClient);
+  gapi.load("client:auth2", loadYoutubeIframePlayerAPI);
+}
+
+function loadYoutubeIframePlayerAPI() {
+  let tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  let firstScriptTag = document.getElementsByTagName("script")[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
+
+function onYouTubeIframeAPIReady() {
+  initClient();
 }
 
 // Init API client library and set up sign in listeners
@@ -255,10 +267,19 @@ function searchStudyVideos() {
 }
 
 function displayVideo(videoId) {
-  videoContainer.innerHTML = `<iframe id="ytplayer" type="text/html" width="640" height="360"
-  src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-  frameborder="0"></iframe>`;
+  player = new YT.Player("player", {
+    height: "360",
+    width: "640",
+    videoId: videoId,
+    events: {
+      onReady: onPlayerReady
+    }
+  });
   return true;
+}
+
+function onPlayerReady(event) {
+  event.target.playVideo();
 }
 
 function getBreakVideos() {
