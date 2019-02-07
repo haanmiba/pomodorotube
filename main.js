@@ -447,18 +447,22 @@ function getVideoLength(video) {
   let timeMatches = video.contentDetails.duration.match(digitsRegex);
   timeMatches = timeMatches.map(match => parseInt(match));
   let numSeconds = 0;
-  if (timeMatches.length === 3) {
-    const [hours, minutes, seconds] = timeMatches;
-    numSeconds += hours * Math.pow(SECONDS_IN_A_MINUTE, 2);
-    numSeconds += minutes * SECONDS_IN_A_MINUTE;
-    numSeconds += seconds;
-  } else if (timeMatches.length === 2) {
-    const [minutes, seconds] = timeMatches;
-    numSeconds += minutes * SECONDS_IN_A_MINUTE;
-    numSeconds += seconds;
-  } else if (timeMatches.length === 1) {
-    const [seconds] = timeMatches;
-    numSeconds += seconds;
+  switch (timeMatches.length) {
+    case 3:
+      const [hours, minutes, seconds] = timeMatches;
+      numSeconds += hours * Math.pow(SECONDS_IN_A_MINUTE, 2);
+      numSeconds += minutes * SECONDS_IN_A_MINUTE;
+      numSeconds += seconds;
+      break;
+    case 2:
+      const [minutes, seconds] = timeMatches;
+      numSeconds += minutes * SECONDS_IN_A_MINUTE;
+      numSeconds += seconds;
+      break;
+    case 1:
+      const [seconds] = timeMatches;
+      numSeconds += seconds;
+      break;
   }
   return numSeconds;
 }
