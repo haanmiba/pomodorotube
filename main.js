@@ -123,6 +123,7 @@ function handleNewShortBreakVideo(event = undefined) {
   const video = shortBreakVideos[shortBreakVideoIndex++];
   displayVideo(video.id);
   secondsRemaining = getVideoLength(video) + THRESHOLD_SECONDS;
+  console.log(`Remaining seconds: ${secondsRemaining}`);
   secondsInCurrentPhase = secondsRemaining;
   shortBreakVideoTimeout = setTimeout(() => {
     newShortBreakVideoButton.style.display = "none";
